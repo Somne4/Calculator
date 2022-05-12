@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="calculator">
+        <div class="calculateWindow"></div>
+        <div class="mOperations">
+            <div class="button MC buffer" onclick = "memoryOperations('MC')">MC</div>
+            <div class="button MS buffer" onclick = "memoryOperations('MS')">MS</div>
+            <div class="button MR buffer" onclick = "memoryOperations('MR')">MR</div>
+            <div class="button Mplus buffer" onclick = "memoryOperations('M+')">M+</div>
+            <div class="button Mminus buffer" onclick = "memoryOperations('M-')">M-</div>
+        </div>
+        <div class="buttons">
+            <div class="block1">
+                <div class="button seven" onclick = "insert('7')">7</div>
+                <div class="button four" onclick = "insert('4')">4</div>
+                <div class="button one" onclick = "insert('1')">1</div>
+                <div class="button zero" onclick = "insert('0')">0</div>
+            </div>
+
+            <div class="block2">
+                <div class="button C cleaning" onclick = "clean()">C</div>
+                <div class="button eight" onclick = "insert('8')">8</div>
+                <div class="button five" onclick = "insert('5')">5</div>
+                <div class="button two" onclick = "insert('2')">2</div>
+                <div class="button dot" onclick = "insert('.')">.</div>
+            </div>
+
+            <div class="block3">
+                <div class="button AC cleaning" onclick = "allClean()">AC</div>
+                <div class="button nine" onclick = "insert('9')">9</div>
+                <div class="button six" onclick = "insert('6')">6</div>
+                <div class="button three" onclick = "insert('3')">3</div>
+                <div class="button plus-minus operation" onclick = "plusMinus()">+/-</div>
+            </div>
+
+            <div class="block4">
+                <div class="button backspace operation" onclick = "backspace()"><-</div>
+                <div class="button slash operation" onclick = "insert('/')">/</div>
+                <div class="button multiply operation" onclick = "insert('*')">*</div>
+                <div class="button minus operation" onclick = "insert('-')">-</div>
+                <div class="button plus operation" onclick = "insert('+')">+</div>
+            </div>
+
+            <div class="block5">
+                <button class="button-success" disabled onclick = "revert()">Rvt</button>
+                <div class="button left-bracket operation" onclick = "insert('(')">(</div>
+                <div class="button right-bracket operation" onclick = "insert(')')">)</div>
+                <div class="button equal operation" onclick = "equal()">=</div>
+            </div>
+
+        </div>
+    </div>
+    <script src="calculator.js"></script>
+</body>
+</html>
+
