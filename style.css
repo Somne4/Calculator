@@ -1,0 +1,106 @@
+.calculator {
+    width: 230px;
+    height: 310px;
+    border-radius: 10px;
+    color: black;
+    font-size: 14px;
+    font-family: "Verdana";
+    margin: 70px auto;
+    box-shadow: 5px 4px 4px gray;
+    background: #2a3948;
+}
+
+.calculateWindow {
+    min-height: 70px;
+    height: auto;
+    word-wrap: break-word;
+    padding: 20px 10px;
+    border-radius: 10px;
+    font-size: 15px;
+    overflow: hidden;
+    text-align: right;
+    color: whitesmoke;
+}
+
+.mOperations {
+    display: flex;
+    color: whitesmoke;
+    font-size: 10px;
+}
+
+.buttons {
+    display: grid;
+    padding: 10px;
+    padding-bottom: 100px;
+    border-radius: 10px;
+    background: #192631;
+    grid-template-columns: repeat(5, 45px);
+    grid-auto-rows: 29px;
+}
+
+.block1 {
+    grid-column-start: 1;
+    grid-row-start: 2;
+}
+.block2 {
+    grid-column-start: 2;
+    grid-row-start: 1;
+}
+
+.block3 {
+    grid-column-start: 3;
+    grid-row-start: 1;
+}
+
+.block4 {
+    grid-column-start: 4;
+    grid-row-start: 1;
+}
+
+.block5 {
+    grid-column-start: 5;
+    grid-row-start: 1;
+}
+
+.button {
+    width: 20px;
+    height: 30px;
+    background: none;
+    text-align: center;
+    line-height: 30px;
+    user-select: none;
+    cursor: pointer;
+    color: whitesmoke;
+}
+
+.button.operation {
+    color: #54ceff;
+}
+
+.button.cleaning {
+    color: #f86e38;
+}
+
+.button.equal {
+    height: 55px;
+    width: 30px;
+    line-height: 50px;
+    font-size: 28px;
+}
+
+.button-success {
+    border: none;
+    height: 30px;
+    background: none;
+    font-size: 14px;
+    color: #54ceff;
+    line-height: 30px;
+}
+
+.button:hover {
+    filter: brightness(200%);
+}
+
+.button:active {
+    filter: brightness(300%);
+}
