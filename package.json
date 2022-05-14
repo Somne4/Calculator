@@ -1,0 +1,15 @@
+{
+  "name": "my-project",
+  "jest": {
+    "verbose": true
+  },
+  "scripts": {
+    "test": "jest --env=jsdom"
+  },
+  "devDependencies": {
+    "jest": "^28.1.0"
+  },
+  "dependencies": {
+    "jest-environment-jsdom": "^28.1.0"
+  }
+}
