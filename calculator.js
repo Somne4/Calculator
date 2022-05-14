@@ -7,7 +7,7 @@ let afterDotValue = '';
 let val = '';
 let flagDot = false;
 let flagSign = false;
-let rvtEnabled = document.querySelector('.button-success')
+const rvtEnabled = document.querySelector('.button-success')
 const calcWindow = document.querySelector('.calculateWindow');
 
 function insert(key) { //Вывод символов с кнопок
@@ -29,13 +29,14 @@ function insert(key) { //Вывод символов с кнопок
     }
     else if (key === '.') {
         if (!currentValue.includes('.')) {
-            if (!currentValue) {
+            if (calcWindow.textContent.length === 0) {
+                calcWindow.textContent = '0.';
                 currentValue = '0.';
             }
             else {
-                currentValue += '.';
+                calcWindow.textContent += key;
+                currentValue += key;
             }
-            calcWindow.textContent += key;
         }
         flagDot = true;
         flagSign = false;
@@ -45,20 +46,28 @@ function insert(key) { //Вывод символов с кнопок
         calcWindow.textContent += key;
         flagSign = false;
     }
-    console.log(currentValue, afterDotValue);
+ }
+
+ function calculate(value) {
+    return String(eval(value));
  }
 
 function equal() { //Операция "=" и активирование кнопки "Rvt"
     rvtValue = calcWindow.textContent;
     if (rvtValue) {
-        let equalValue = String(eval(rvtValue));
-        let equalDot = equalValue.substring(equalValue.indexOf('.') + 1, equalValue.length);
-        if (equalDot.length > 12) {
-            console.log(equalValue);
-            equalValue = Number(equalValue).toFixed(12);
+        try {
+            let equalValue = calculate(rvtValue);
+            let equalDot = equalValue.substring(equalValue.indexOf('.') + 1, equalValue.length);
+            if (equalDot.length > 12) {
+                equalValue = Number(equalValue).toFixed(12);
+            }
+            calcWindow.textContent = equalValue;
+            rvtEnabled.removeAttribute('disabled');
         }
-        calcWindow.textContent = equalValue;
-        rvtEnabled.removeAttribute('disabled');
+        catch (e) {
+            alert("Ошибка вычисления: " + e.textContent);
+            clean();
+        }
     }
     return rvtValue;
 }
@@ -123,3 +132,5 @@ function memoryOperations(M) { // Операции с памятью при на
     }
     return bufferValue;
 }
+
+module.exports = calculate;
