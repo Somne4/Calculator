@@ -2,53 +2,181 @@ let bufferValue = '';
 let rvtValue = '';
 const signs = ['+', '-', '*', '/'];
 let k = 1;
-let currentValue = '';
+let beforeDotValue = '';
 let afterDotValue = '';
 let val = '';
+let currentValue = '';
 let flagDot = false;
 let flagSign = false;
-const rvtEnabled = document.querySelector('.button-success')
+const rvtEnabled = document.querySelector('.button-success');
 const calcWindow = document.querySelector('.calculateWindow');
+const nums = ['0','1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
-function insert(key) { //Вывод символов с кнопок
+//Обработка события клавиатуры
+document.addEventListener('keydown', function(event) {
+    if (event.key in nums) {
+        event.preventDefault();
+        insert(event.key)
+    }
+    switch(event.key) {
+        case '.':
+            insert('.');
+            break;
+        case '+':
+            insert('+');
+            break;
+        case '-':
+            insert('-');
+            break;
+        case '*':
+            insert('*');
+            break;
+        case '/':
+            insert('/');
+            break;
+        case '(':
+            insert('(');
+            break;
+        case ')':
+            insert(')');
+            break;
+        case 'Backspace':
+            insert('<-');
+            break;
+        case 'c':
+        case 'C':
+            clean();
+            break;
+        case 'a':
+        case 'A':
+            allClean();
+            break;
+        case 'r':
+        case 'R':
+            revert();
+            break;
+        case '=':
+        case 'Enter':
+            equal();
+            break;
+        default:
+            break
+    }
+});
+
+//Ввод символов и их отображение на экране
+function insert(key) {
+    //Обработка ввода символа скобки
     if (key === '(' || key === ')') {
         calcWindow.textContent += key;
+        flagSign = false;
     }
+
+    //Обработка ввода знаков операции
     if (signs.includes(key) && !flagSign) {
         calcWindow.textContent += key;
-        currentValue = '';
+        beforeDotValue = '';
         afterDotValue = '';
         flagDot = false;
         flagSign = true;
     }
-    if (key >= 0 && !flagDot && currentValue.length < 12) {
-        currentValue += key;
+
+    //Ограничение на количество ввода знаков перед запятой < 12
+    if (key >= 0 && !flagDot && beforeDotValue.length < 12) {
+        beforeDotValue += key;
         k += 1;
         calcWindow.textContent += key;
         flagSign = false;
     }
+
+    //Обработка ввода символа точки
     else if (key === '.') {
-        if (!currentValue.includes('.')) {
+        if (!beforeDotValue.includes('.')) {
             if (calcWindow.textContent.length === 0) {
                 calcWindow.textContent = '0.';
-                currentValue = '0.';
+                beforeDotValue = '0.';
             }
             else {
                 calcWindow.textContent += key;
-                currentValue += key;
+                beforeDotValue += key;
             }
         }
         flagDot = true;
-        flagSign = false;
+        flagSign = true;
     }
+
+    //Ограничение на количество ввода знаков после запятой < 8
     if (flagDot && afterDotValue.length < 8 && key >= 0) {
         afterDotValue += key;
         calcWindow.textContent += key;
         flagSign = false;
     }
+
+    //Операция <-
+    if (key === '<-') {
+        val = calcWindow.textContent;
+        if (signs.includes(val.slice(-1))) {
+            flagSign = false;
+        }
+        if (val.slice(-1) === '.') {
+            flagDot = false;
+            flagSign = false;
+            beforeDotValue = beforeDotValue.substring(0, beforeDotValue.length - 1);
+        }
+        if (val.slice(-1) >= 0) {
+            if (beforeDotValue.includes('.')) {
+                afterDotValue = afterDotValue.substring(0, afterDotValue.length - 1);
+            } else {
+                beforeDotValue = beforeDotValue.substring(0, beforeDotValue.length - 1);
+            }
+        }
+        calcWindow.textContent = val.substring(0, val.length - 1);
+    }
+
+    currentValue = beforeDotValue + afterDotValue;
+
+    //Операция +/-
+    if (key === '+/-') {
+        val = calcWindow.textContent;
+        if (val) {
+            let posValue = val.lastIndexOf(currentValue);
+            let signBeforeValue = val.charAt(posValue - 1);
+            if (!flagSign && currentValue.slice(-1) !== '.') {
+                switch (signBeforeValue) {
+                    case '':
+                        val = -val;
+                        break;
+                    case '+': {
+                        val = val.substring(0, posValue - 1);
+                        val += "-" + currentValue;
+                    }
+                        break;
+                    case '-': {
+                        val = val.substring(0, posValue - 1);
+                        if (nums.includes(val.slice(-1)))
+                        {
+                            val += "+" + currentValue;
+                        }
+                        else if (val === '') {
+                            val = currentValue;
+                        }
+                        else {
+                            val += currentValue;
+                        }
+                    }
+                        break;
+                    case '*':
+                    case '/':
+                        val = val.substring(0, posValue) + (-1) * currentValue;
+                        break;
+                }
+            }
+            calcWindow.textContent = val;
+        }
+    }
  }
 
- function calculate(value) {
+function calculate(value) {
     return String(eval(value));
  }
 
@@ -57,9 +185,12 @@ function equal() { //Операция "=" и активирование кноп
     if (rvtValue) {
         try {
             let equalValue = calculate(rvtValue);
-            let equalDot = equalValue.substring(equalValue.indexOf('.') + 1, equalValue.length);
-            if (equalDot.length > 12) {
-                equalValue = Number(equalValue).toFixed(12);
+            if (equalValue.includes('.')) {
+                let splitString = equalValue.split('.');
+                while (splitString[1].length > 8 || splitString[1].slice(-1) === '0') {
+                    splitString[1] = splitString[1].substring(0, splitString[1].length - 1);
+                }
+                equalValue = splitString.join('.');
             }
             calcWindow.textContent = equalValue;
             rvtEnabled.removeAttribute('disabled');
@@ -77,16 +208,12 @@ function revert() { //При нажатии на кнопку "Rvt" выводи
     rvtEnabled.setAttribute('disabled', true);
 }
 
-function backspace() { //При нажатии на кнопку "<-" удаляет один символ из выражения
-    val = calcWindow.textContent;
-    calcWindow.textContent = val.substring(0, val.length - 1);
-}
-
 function clean() { //При нажатии на кнопку "C" удаляет выражение
     calcWindow.textContent = '';
     k = 1;
-    currentValue = '';
+    beforeDotValue = '';
     afterDotValue = '';
+    currentValue = '';
     flagDot = false;
     flagSign = false;
 }
@@ -96,19 +223,12 @@ function allClean() { // При нажатии на кнопку "AC" очища
     bufferValue = '';
     currentValue = '';
     afterDotValue = '';
-    val = '';
+    beforeDotValue = '';
     calcWindow.textContent = '';
     rvtEnabled.setAttribute('disabled', true);
     k = 1;
     flagDot = false;
     flagSign = false;
-}
-
-function plusMinus() { // При нажатии на кнопку "+/-" меняет знак у выражения
-    val = eval(calcWindow.textContent);
-    if (val) {
-        calcWindow.textContent = (-1) * val;
-    }
 }
 
 function memoryOperations(M) { // Операции с памятью при нажатии на кнопки "MS MC MR M+ M-"
